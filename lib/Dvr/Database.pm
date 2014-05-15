@@ -7,30 +7,89 @@ use Data::Uniqid;
 use constant DATAFILE => 'data/recordings.csv';
 use constant COLUMNS => 'uuid,timestamp,channel,starttime,endtime';
 
+# Can select data in a where-key-equals-data fasion, supports proprietary look-up by uuid and datetime
 sub select {
-	my (%data) = @_;
+	my ($key, $data) = @_;
 	my @columns = split( ',', COLUMNS );
+	my @results;
 
-	return 1;
+	if( lc( $key ) eq 'uuid' ) {
+		@results = &_select_by_uuid( $data );
+	}
+	elsif( lc( $key ) eq 'datetime' ) {
+		@results = &_select_by_datetime( $data );
+	}
+
+	return @results;
+}
+
+# internal method to look-up by uuid
+sub _select_by_uuid {
+	my ($uuid) = @_;
+	my @database = &_get_database(); 
+	my @results;
+
+	foreach my $row ( @database ) {
+		my @current_row = split( ',', $row );
+		
+		if( $current_row[0] eq $uuid ) {
+			push( @results, $row );
+		}
+	}
+
+	return @results;
+}
+
+# internal method to look-up by datetime
+sub _select_by_datetime {
+	my ($datetime) = @_;
+	my @database = &_get_database(); 
+	my @results;
+	
+	$datetime = &_reduce_timestamp( $datetime );
+	foreach my $row ( @database ) {
+		my @current_row = split( ',', $row );
+		
+		my $starttime = &_reduce_timestamp( $current_row[3] );
+		my $endtime = &_reduce_timestamp( $current_row[4] );
+
+		if( $datetime >= $starttime && $datetime < $endtime ) {
+			push( @results, $row );
+		}
+	}
+
+	return @results;
+}
+
+sub _reduce_timestamp {
+	my ($timestamp) = @_;
+	my $reduced_timestamp =~ s/[\:\- ]//g;
+
+	return $reduced_timestamp;
 }
 
 # Takes in a UUID and does not push that row to be written to disk if it exists
 sub delete {
 	my ($uuid) = @_;
+	my $deleted_data = 0;
 
 	my @old_data = &_get_database(); 
 	my @new_data;
+
 
 	foreach my $row ( @old_data ) {
 		my @current_row = split( ',', $row );
 		if( $current_row[0] ne $uuid ) {
 			push( @new_data, $row );
 		}
+		else {
+			$deleted_data = 1;
+		}
 	}
 
 	&_set_database( @new_data );	
 	
-	return 1;
+	return $deleted_data;
 }
 
 # Simply pushes a string onto an array of strings to be written to disk
@@ -50,7 +109,7 @@ sub insert {
 	push( @database, $row . "\n" );
 	&_set_database( @database );
 
-	return 1;
+	return %data;
 }
 
 

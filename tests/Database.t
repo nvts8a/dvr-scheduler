@@ -10,9 +10,18 @@ use_ok( 'Dvr::Database' );
 
 my %testdata = (
 	channel => '123',
-	starttime => '9999-12-31 23:59:59',
-	endtime => '9999-12-31 23:59:59',
+	starttime => '2001-01-01 00:00:00',
+	endtime => '2001-12-31 23:59:59',
 );
 
-Dvr::Database::insert( %testdata );
-Dvr::Database::delete( 'LZLmyXliO' );
+# Insert test data
+my %inserted_data = Dvr::Database::insert( %testdata );
+
+# Select inserted test data
+my @select_by_uuid = Dvr::Database::select( 'uuid', $inserted_data{'uuid'} );
+diag( @select_by_uuid );
+
+my @select_by_datetime = Dvr::Database::select( 'datetime', '2001-06-31 23:59:59' );
+diag( @select_by_datetime );
+
+#Dvr::Database::delete( $inserted_data{'uuid'} );
