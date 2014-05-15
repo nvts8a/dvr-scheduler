@@ -41,10 +41,10 @@ is( Dvr::Validator::valid_channel('123-456'), '0', 'Invalid channel: 123-456' );
 is( Dvr::Validator::valid_datetime('1000-01-01 00:00:00'), '1', 'Valid datetime: 1000-01-01 00:00:00' );
 is( Dvr::Validator::valid_datetime('9999-12-31 23:59:59'), '1', 'Valid datetime: 9999-12-31 23:59:59' );
 is( Dvr::Validator::valid_datetime('2014-05-15 15:33:46'), '1', 'Valid datetime: 2014-05-15 15:33:46' );
-is( Dvr::Validator::valid_datetime('2014-05-15 15:33'), '1', 'Valid datetime: 2014-05-15 15:33' );
-is( Dvr::Validator::valid_datetime('2014-05-15 15'), '1', 'Valid datetime: 2014-05-15 15' );
 
 # Invalid datetimes
+is( Dvr::Validator::valid_datetime(undef), '0', 'Invalid datetime: undef' );
+is( Dvr::Validator::valid_datetime('201A-05-15 15:33:46'), '0', 'Invalid datetime: 201A-05-15 15:33:46' );
 is( Dvr::Validator::valid_datetime('201-05-15 15:33:46'), '0', 'Invalid datetime: 201-05-15 15:33:46' );
 is( Dvr::Validator::valid_datetime('20141-05-15 15:33:46'), '0', 'Invalid datetime: 20141-05-15 15:33:46' );
 is( Dvr::Validator::valid_datetime('05-15 15:33:46'), '0', 'Invalid datetime: 05-15 15:33:46' );
