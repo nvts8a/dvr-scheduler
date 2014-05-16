@@ -63,9 +63,9 @@ sub _select_by_datetime {
 
 sub _reduce_timestamp {
 	my ($timestamp) = @_;
-	my $reduced_timestamp =~ s/[\:\- ]//g;
+	$timestamp =~ s/[\:\- ]//g;
 
-	return $reduced_timestamp;
+	return $timestamp;
 }
 
 # Takes in a UUID and does not push that row to be written to disk if it exists
