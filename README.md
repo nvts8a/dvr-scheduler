@@ -18,7 +18,6 @@ The system should be able to retreive recordings.
 * Get recordings by UUID
 * Get recordings by Channel
 * Get recordings by a datetime
-* Get recordings in a span of time
 
 A recordings should look as follows:
 * UUID

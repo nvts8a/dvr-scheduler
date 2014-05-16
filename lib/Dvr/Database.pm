@@ -19,6 +19,9 @@ sub select {
 	elsif( lc( $key ) eq 'datetime' ) {
 		@results = &_select_by_datetime( $data );
 	}
+	elsif( lc( $key ) eq 'channel' ) {
+		@results = &_select_by_channel( $data );
+	}
 
 	return @results;
 }
@@ -33,6 +36,23 @@ sub _select_by_uuid {
 		my @current_row = split( ',', $row );
 		
 		if( $current_row[0] eq $uuid ) {
+			push( @results, $row );
+		}
+	}
+
+	return @results;
+}
+
+# internal method to look-up by channel
+sub _select_by_channel {
+	my ($channel) = @_;
+	my @database = &_get_database(); 
+	my @results;
+
+	foreach my $row ( @database ) {
+		my @current_row = split( ',', $row );
+		
+		if( $current_row[2] eq $channel ) {
 			push( @results, $row );
 		}
 	}
