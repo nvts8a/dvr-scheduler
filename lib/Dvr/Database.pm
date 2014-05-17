@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Data::Uniqid;
+# This module should not contain business logic like this, it should use conf files or something, but for time I made it have a little
 use constant DATAFILE => 'data/recordings.csv';
 use constant COLUMNS => 'uuid,timestamp,channel,starttime,endtime';
 
