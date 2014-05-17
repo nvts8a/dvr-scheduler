@@ -6,10 +6,63 @@ use warnings;
 use Dvr::Database;
 use Dvr::Validator;
 
+# Takes in a date, timespan, and channel, Validates the data and enters it into the database
 sub set_new_recording {
+	my ($datetime, $timespan, $channel) = @_;
+	my %response = ();
 
+	if( !Dvr::Validator::valid_channel( $channel ) ) {
+		$response{'status'} = 400;
+		push( $response{'error'}, 'invalid_channel' ); 
+	}
+
+	if( !Dvr::Validator::valid_datetime( $datetime ) ) {
+		$response{'status'} = 400;
+		push( $response{'error'}, 'invalid_datetime' ); 
+	}
+
+	if( !Dvr::Validator::valid_timespan( $timespan ) ) {
+		$response{'status'} = 400;
+		push( $response{'error'}, 'invalid_timespan' ); 
+	}
+
+	# TODO: Add validation on what is currently in the database
+
+	my %recording = (
+		channel =>		$channel,
+		starttime =>	$datetime,
+		endtime =>		&_add_timespan( $datetime, $timespan )
+	);
+
+	my %database_entry = Dvr::Database::insert( %recording );
+
+	if( $database_entry{'uuid'} ) {
+		$response{'status'} = 200,
+		$response{'recording'} = %database_entry
+	}
+	else {
+		$response{'status'} = 500,
+		push( $response{'error'}, 'internal_server_error' );
+	}
+
+	return %response;
 }
 
+
+sub get_current_recordings {
+}
+
+sub get_channel_recordings {
+}
+
+sub delete_recording {
+}
+
+sub update_recording {
+}
+
+# internal method to add a minute value to a provided datatime valiue
+# FIXME: Adding timespan will only move to the next month on 31 days, does not support 30,29, or 28 day months
 sub _add_timespan {
 	my ($datetime, $timespan) = @_;
 
@@ -43,11 +96,11 @@ sub _add_timespan {
 		$day -= 31;
 		$additional_month++;
 	}
-	
+
 	$month += $additional_month;
 
-	while( $day > 12 ) {
-		$day -= 12;
+	while( $month > 12 ) {
+		$month -= 12;
 		$additional_year++;
 	}
 
@@ -61,16 +114,5 @@ sub _add_timespan {
 	return "$year-$month-$day $hour:$min:$sec";
 }
 
-sub get_current_recordings {
-}
-
-sub get_channel_recordings {
-}
-
-sub delete_recording {
-}
-
-sub update_recording {
-}
 
 1;

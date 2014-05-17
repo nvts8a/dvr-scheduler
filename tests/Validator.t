@@ -63,3 +63,19 @@ is( Dvr::Validator::valid_datetime('2014-05-15 15:313:46'), '0', 'Invalid dateti
 is( Dvr::Validator::valid_datetime('2014-05-15 15:33:461'), '0', 'Invalid datetime: 2014-05-15 15:33:461' );
 
 
+#####
+# Tests for valid timespans
+
+# Valid timespans
+is( Dvr::Validator::valid_timespan( 15 ), '1', "Valid timespan: 15" );
+is( Dvr::Validator::valid_timespan( 30 ), '1', "Valid timespan: 30" );
+is( Dvr::Validator::valid_timespan( 45 ), '1', "Valid timespan: 45" );
+is( Dvr::Validator::valid_timespan( 180 ), '1', "Valid timespan: 180" );
+
+# Invalid timespans
+is( Dvr::Validator::valid_timespan( 0 ), '0', "Invalid timespan: 0" );
+is( Dvr::Validator::valid_timespan( 1 ), '0', "Invalid timespan: 1" );
+is( Dvr::Validator::valid_timespan( '-1' ), '0', "Invalid timespan: -1" );
+is( Dvr::Validator::valid_timespan( 59 ), '0', "Invalid timespan: 59" );
+is( Dvr::Validator::valid_timespan( 215 ), '0', "Invalid timespan: 215" );
+

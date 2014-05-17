@@ -17,6 +17,24 @@ sub valid_channel {
 	return $is_valid;
 }
 
+# Validates a timespan value, DVR expects a timespan to be greater than 0 and divisable by 15
+sub valid_timespan {
+	my ($timespan) = @_;
+	my $is_valid = 0;
+	
+	if( $timespan ) {
+		if( $timespan > 0 ) {
+			my $remainder = $timespan % 15;
+
+			if( $remainder == 0 ) {
+				$is_valid = 1;
+			}
+		}
+	}
+
+	return $is_valid;
+}
+
 # Validates a datetime format, DVR expects a MySQL datetime fromat. Will return 1 on valid, 0 on invalid.
 sub valid_datetime {
 	my ($datetime) = @_;
