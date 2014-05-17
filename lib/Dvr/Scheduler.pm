@@ -13,36 +13,36 @@ sub set_new_recording {
 
 	if( !Dvr::Validator::valid_channel( $channel ) ) {
 		$response{'status'} = 400;
-		push( $response{'error'}, 'invalid_channel' ); 
+		$response{'error'} = 'invalid_channel'; 
 	}
-
-	if( !Dvr::Validator::valid_datetime( $datetime ) ) {
+	elsif( !Dvr::Validator::valid_datetime( $datetime ) ) {
 		$response{'status'} = 400;
-		push( $response{'error'}, 'invalid_datetime' ); 
+		$response{'error'} = 'invalid_datetime'; 
 	}
-
-	if( !Dvr::Validator::valid_timespan( $timespan ) ) {
+	elsif( !Dvr::Validator::valid_timespan( $timespan ) ) {
 		$response{'status'} = 400;
-		push( $response{'error'}, 'invalid_timespan' ); 
+		$response{'error'} = 'invalid_timespan'; 
 	}
 
 	# TODO: Add validation on what is currently in the database
 
-	my %recording = (
-		channel =>		$channel,
-		starttime =>	$datetime,
-		endtime =>		&_add_timespan( $datetime, $timespan )
-	);
+	if( !$response{'status'} ) {
+		my %recording = (
+			channel =>		$channel,
+			starttime =>	$datetime,
+			endtime =>		&_add_timespan( $datetime, $timespan )
+		);
 
-	my %database_entry = Dvr::Database::insert( %recording );
+		my %database_entry = Dvr::Database::insert( %recording );
 
-	if( $database_entry{'uuid'} ) {
-		$response{'status'} = 200,
-		$response{'recording'} = %database_entry
-	}
-	else {
-		$response{'status'} = 500,
-		push( $response{'error'}, 'internal_server_error' );
+		if( $database_entry{'uuid'} ) {
+			$response{'status'} = 200,
+			$response{'recording'} = %database_entry
+		}
+		else {
+			$response{'status'} = 500,
+			$response{'error'} = 'internal_server_error';
+		}
 	}
 
 	return %response;
