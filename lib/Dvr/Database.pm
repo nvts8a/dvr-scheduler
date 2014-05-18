@@ -23,6 +23,9 @@ sub select {
 	elsif( lc( $key ) eq 'channel' ) {
 		@results = &_select_by_channel( $data );
 	}
+	else {
+		@results = &_get_database();
+	}
 
 	return @results;
 }

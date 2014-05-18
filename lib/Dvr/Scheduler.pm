@@ -48,11 +48,17 @@ sub set_new_recording {
 	return %response;
 }
 
-
+# Gets all of the current recordings
 sub get_current_recordings {
+	
+	return Dvr::Database::select();
 }
 
+# Gets all of the recordings by channel
 sub get_channel_recordings {
+	my ($channel) = @_;
+
+	return Dvr::Database::select( 'channel', $channel );
 }
 
 sub delete_recording {
