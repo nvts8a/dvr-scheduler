@@ -152,7 +152,7 @@ sub _get_database {
 sub _set_database {
 	my (@data) = @_;
 
-	open DATABASE, ">", DATAFILE or $!; 
+	open DATABASE, ">", DATAFILE or die $!; 
 	
 	foreach my $row (@data) {
 		print DATABASE $row;

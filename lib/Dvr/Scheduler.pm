@@ -61,9 +61,17 @@ sub get_channel_recordings {
 	return Dvr::Database::select( 'channel', $channel );
 }
 
+sub get_datetime_recordings {
+	my ($datetime) = @_;
+
+	return Dvr::Database::select( 'datetime', $datetime ); 
+}
+
+# TODO
 sub delete_recording {
 }
 
+# TODO
 sub update_recording {
 }
 
