@@ -44,10 +44,7 @@ A recording should look as follows when stored:
 * End Time
 
 Example:
-1HJdTq7mGK,2014-05-19 00:15:20,123,2015-03-15 03:30:00,2015-03-15 04:00:00,
-33imXq5CFG,2014-05-19 00:17:41,123,2015-04-15 12:00:00,2015-04-15 12:30:00,
-2BePkuqN8z,2014-05-19 00:53:08,123,2015-03-15 05:00:00,2015-03-15 05:30:00,
-6omGA6Rl1H,2014-05-19 01:07:05,200,2015-03-20 06:30:00,2015-03-20 07:30:00,
+**1HJdTq7mGK,2014-05-19 00:15:20,123,2015-03-15 03:30:00,2015-03-15 04:00:00,**
 
 ## Add Recordings
 
@@ -57,6 +54,8 @@ The system should be able to add recordings using the following inputs:
 * Channel
 
 ## Delete Recordings
+
+bin/Dvr.pl does not have the functionality to DELETE recordings while Dvr::Scheduler does. But what Dvr.pl does if there is another recording at the same time it will ask you if you want to replace it. Which will delete the current recording and attempt to re-add the new recording.
 
 The system should be able to delete recordings
 * Delete by UUID - **The API can only delete by UUID currently, bin/Dvr.pl contains the logic that will get the UUID and delete by UUID.**
