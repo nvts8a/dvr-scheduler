@@ -24,7 +24,18 @@ sub set_new_recording {
 		$response{'error'} = 'invalid_timespan'; 
 	}
 
-	# TODO: Add validation on what is currently in the database
+	my @recording;
+	my $test_timespan = $timespan;
+	while( $test_timespan >= 0 && scalar @recording == 0 ) {
+		@recording = &get_datetime_recordings( &_add_timespan( $datetime, $test_timespan ) );
+		$test_timespan -= 15;
+	}
+
+	if( scalar @recording > 0 ) {
+		$response{'status'} = 400;
+		$response{'error'} = 'datetime_taken';
+		$response{'recording'} = $recording[0];
+	}
 
 	if( !$response{'status'} ) {
 		my %recording = (
@@ -36,11 +47,11 @@ sub set_new_recording {
 		my %database_entry = Dvr::Database::insert( %recording );
 
 		if( $database_entry{'uuid'} ) {
-			$response{'status'} = 200,
-			$response{'recording'} = %database_entry
+			$response{'status'} = 200;
+			$response{'recording'} = %database_entry;
 		}
 		else {
-			$response{'status'} = 500,
+			$response{'status'} = 500;
 			$response{'error'} = 'internal_server_error';
 		}
 	}
@@ -61,14 +72,22 @@ sub get_channel_recordings {
 	return Dvr::Database::select( 'channel', $channel );
 }
 
+# Gets all of the recordings by a datetime
 sub get_datetime_recordings {
 	my ($datetime) = @_;
+
+	if( !$datetime ) {
+		$datetime = Dvr::Database::_get_current_datetime(); 
+	}
 
 	return Dvr::Database::select( 'datetime', $datetime ); 
 }
 
-# TODO
+# Deletes a recording using a prodvided UUID
 sub delete_recording {
+	my ($uuid) = @_;
+
+	return Dvr::Database::delete( $uuid );
 }
 
 # TODO

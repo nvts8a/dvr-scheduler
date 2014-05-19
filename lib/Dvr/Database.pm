@@ -14,7 +14,11 @@ sub select {
 	my @columns = split( ',', COLUMNS );
 	my @results;
 
-	if( lc( $key ) eq 'uuid' ) {
+	
+	if( !$key ) {
+		@results = &_get_database();
+	}
+	elsif( lc( $key ) eq 'uuid' ) {
 		@results = &_select_by_uuid( $data );
 	}
 	elsif( lc( $key ) eq 'datetime' ) {
@@ -22,9 +26,6 @@ sub select {
 	}
 	elsif( lc( $key ) eq 'channel' ) {
 		@results = &_select_by_channel( $data );
-	}
-	else {
-		@results = &_get_database();
 	}
 
 	return @results;
@@ -124,10 +125,12 @@ sub insert {
 	$data{'uuid'} = Data::Uniqid->suniqid;
 	$data{'timestamp'} = &_get_current_datetime(); 
 
-	my $row;
+	my $row = '';
 	foreach my $column (@columns) {
 		$row = $row . $data{$column} . ',';
 	}
+
+	$row =~ s/[\n\r]//g;
 
 	my @database = &_get_database(); 
 	push( @database, $row . "\n" );
