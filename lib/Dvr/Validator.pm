@@ -3,8 +3,6 @@ package Dvr::Validator;
 use strict;
 use warnings;
 
-use Dvr::Database;
-
 # Validates a inout channel. DVR expects a certain format, will return 1 if format is valid or 0 if it is not
 sub valid_channel {
 	my ($channel) = @_;

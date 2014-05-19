@@ -21,10 +21,7 @@ is( Dvr::Scheduler::_add_timespan( '2014-05-15 15:33:46', 15 ), '2014-05-15 15:4
 
 #####
 # Tests for set_new_recording
-my %test_recording = Dvr::Scheduler::set_new_recording( '2014-05-30 20:00:00', 30, '432' );
-is( $test_recording{'status'}, 200, "Status 200 on good new recording." );
-
-%test_recording = Dvr::Scheduler::set_new_recording( '2014-05-30 20:00:00', 30, '4321' );
+my %test_recording = Dvr::Scheduler::set_new_recording( '2014-05-30 20:00:00', 30, '4321' );
 is( $test_recording{'status'}, 400, "Status 400 on bad channel" );
 
 %test_recording = Dvr::Scheduler::set_new_recording( '201-05-30 20:00:00', 30, '321' );

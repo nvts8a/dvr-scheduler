@@ -11,6 +11,7 @@ sub set_new_recording {
 	my ($datetime, $timespan, $channel) = @_;
 	my %response = ();
 
+	# Standard inpur formating validation
 	if( !Dvr::Validator::valid_channel( $channel ) ) {
 		$response{'status'} = 400;
 		$response{'error'} = 'invalid_channel'; 
@@ -24,19 +25,23 @@ sub set_new_recording {
 		$response{'error'} = 'invalid_timespan'; 
 	}
 
-	my @recording;
-	my $test_timespan = $timespan;
-	while( $test_timespan >= 0 && scalar @recording == 0 ) {
-		@recording = &get_datetime_recordings( &_add_timespan( $datetime, $test_timespan ) );
-		$test_timespan -= 15;
+	# TODO: Move all this to Validator SHOULD NOT BE HERE
+	if( !$response{'status'} ) {
+		my @recording;
+		my $test_timespan = $timespan;
+		while( $test_timespan >= 0 && scalar @recording == 0 ) {
+			@recording = &get_datetime_recordings( &_add_timespan( $datetime, $test_timespan ) );
+			$test_timespan -= 15;
+		}
+
+		if( scalar @recording > 0 ) {
+			$response{'status'} = 400;
+			$response{'error'} = 'datetime_taken';
+			$response{'recording'} = $recording[0];
+		}
 	}
 
-	if( scalar @recording > 0 ) {
-		$response{'status'} = 400;
-		$response{'error'} = 'datetime_taken';
-		$response{'recording'} = $recording[0];
-	}
-
+	# If there has not been an error yet, continue to add the recording
 	if( !$response{'status'} ) {
 		my %recording = (
 			channel =>		$channel,

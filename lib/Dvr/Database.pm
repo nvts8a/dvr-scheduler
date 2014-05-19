@@ -30,6 +30,8 @@ sub select {
 
 	return @results;
 }
+ 
+# FIXME: All of these select methods should NOT work this way, I have should have one method that accepts the field and dynamically selects based on that, it was done this way to save time
 
 # internal method to look-up by uuid
 sub _select_by_uuid {
@@ -86,6 +88,7 @@ sub _select_by_datetime {
 	return @results;
 }
 
+# Removes readability characters from datetime for numerical comparison 
 sub _reduce_timestamp {
 	my ($timestamp) = @_;
 	$timestamp =~ s/[\:\- ]//g;

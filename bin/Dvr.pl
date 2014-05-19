@@ -16,7 +16,7 @@ sub main {
 	}
 }
 
-
+#
 sub print_menu {
 	print "--DVR Scheduler--\n";
 	print "\n";
@@ -29,6 +29,7 @@ sub print_menu {
 	print "\n";
 }
 
+# 
 sub make_selection {
 	print "Selection: ";
 	my $selection = <>;
@@ -43,6 +44,7 @@ sub make_selection {
 	return $selection;
 }
 
+# Add numbers to regex validation when you add additional selections
 sub validation_selection {
 	my ($selection) = @_;
 	my $is_valid = 0;
@@ -54,7 +56,7 @@ sub validation_selection {
 	return $is_valid;
 }
 
-
+# Router to run method based on selection
 sub route_selection {
 	my ($selection) = @_;
 
@@ -68,11 +70,12 @@ sub route_selection {
 		&print_recordings( Dvr::Scheduler::get_datetime_recordings( &enter_datetime() ) );
 	}
 	elsif( $selection == 4 ) {
-		&route_set_new_recording();
+		&set_new_recording();
 	}
 }
 
-sub route_set_new_recording {
+# goes through the process of collecting data and making API calls to add a new recording
+sub set_new_recording {
 	my $proceed = 'Y';
 	my $datetime = &enter_datetime();
 	my $timespan = &enter_timespan();
@@ -83,6 +86,7 @@ sub route_set_new_recording {
 	while( $new_recording{'status'} ne '200' && $proceed eq 'Y' ) {
 		
 		if( $new_recording{'error'} eq 'datetime_taken' ) {
+			# TODO: This could be in it's own sub, to increae readablity, testablity
 			print "Recording already happening at this time: $new_recording{'recording'}\n";
 			print "Would you like to replace this record? Y/N: ";
 			my $replace = uc( substr( <>, 0, 1 ) );
@@ -99,6 +103,7 @@ sub route_set_new_recording {
 			}
 		}
 		else {
+			# TODO: This could be in it's own sub, to increae readablity, testablity
 			print "Setting the recording failed: $new_recording{'error'}\n";
 			print "Would you like to try again? Y/N: ";
 			$proceed = uc( substr( <>, 0, 1 ) );
@@ -116,6 +121,26 @@ sub route_set_new_recording {
 	return %new_recording;
 }
 
+# Reusuable sub for printing and array of recordings
+sub print_recordings {
+	my (@recordings) = @_;
+	
+	if( scalar @recordings > 0 ) {
+		print "-- UUID, Added At, Channel, Start Time, End Time --\n";
+	}
+	else {
+		print "No recordings found.\n\n";
+	}
+
+	foreach my $recording (@recordings) {
+		print "$recording";
+	}
+
+	print "\n";
+}
+
+#####
+# Little subs with copy prints and input to increae code readability 
 sub enter_datetime {
 	print "Please enter a date and time in this format: YYYY-MM-DD hh:mm:ss\n";
 	print "Date and time: ";
@@ -146,19 +171,3 @@ sub enter_channel {
 	return $channel;
 }
 
-sub print_recordings {
-	my (@recordings) = @_;
-	
-	if( scalar @recordings > 0 ) {
-		print "-- UUID, Added At, Channel, Start Time, End Time --\n";
-	}
-	else {
-		print "No recordings found.\n\n";
-	}
-
-	foreach my $recording (@recordings) {
-		print "$recording";
-	}
-
-	print "\n";
-}
