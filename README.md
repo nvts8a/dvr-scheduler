@@ -28,6 +28,11 @@ To run the DVR scheduler:
 
 **Data::Uniqid** is a CPAN module being used to create the Database unique ID.
 
+The following modules have only been added because they're used by SmokeTest.pl and are pre-installed to OSX 10.9 but are not pre-installed in Ubuntu 13.10:
+* Number::Compare
+* Text::Glob
+* File::Find::Rule
+
 ## Get Recordings
 
 The system should be able to retreive recordings.
